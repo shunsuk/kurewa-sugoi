@@ -1,0 +1,51 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+       "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="jp" lang="jp">
+  <head>
+    <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
+    <title>[これはすごい] in リアルタイム</title>
+    <link rel="stylesheet" type="text/css" href="/stylesheets/style.css" />
+    <script type="text/javascript" src="/javascripts/jquery-1.3.2.min.js"></script>
+    <script type="text/javascript">
+      $(function() {
+          setTimeout(update, 3 * 1000);
+      });
+      
+      function update() {
+        var latest_id = $('#latest_id').val()
+
+        $.get('/diff', {latest_id: latest_id}, function(data) {
+            res = eval('(' + data + ')');
+
+            if (res.latest_id <= latest_id)
+                return;
+
+            var b = res.bookmark;
+            $('.bookmark').before(
+              '<div id="b' + b.id + '" class="bookmark" style="display:none">' +
+              '<p class="title"><a href="' + b.url + '">' + b.title + '</a></p>' +
+              '<p class="comment"><a href="http://b.hatena.ne.jp/' + b.username + '">' + b.username + '</a> ' + b.comment + '</p>' +
+              '</div>');
+            $('#b' + b.id).slideDown('slow');
+
+            $('#latest_id').val(res.latest_id);
+        });
+        setTimeout(update, 3 * 1000);
+      }
+    </script>
+  </head>
+  <body>
+    <h1>[これはすごい] in リアルタイム</h1>
+    <p>説明：<a href="http://d.hatena.ne.jp/shunsuk/20090615/1245069178">はてなブックマーク Web HookとGAEで「[これはすごい] in リアルタイム」を作った - 医者を志す妻を応援する夫の日記</a></p>
+    <input type="hidden" id="latest_id" value="{{ latest_id }}" /><br/>
+    <div id="bookmarks">
+    {% for b in bookmarks %}
+      <div id="b{{ b.id }}" class="bookmark">
+        <p class="title"><a href="{{ b.url }}">{{ b.title|escape }}</a></p>
+        <p class="comment"><a href="http://b.hatena.ne.jp/{{ b.username }}/">{{ b.username }}</a> {{ b.comment|escape }}</p>
+        </div>
+    {% endfor %}
+    </div>
+  </body>
+</html>

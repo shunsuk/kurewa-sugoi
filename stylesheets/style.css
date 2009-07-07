@@ -1,0 +1,23 @@
+body {
+  padding: 20px;
+  background-color: #CCFFFF;
+}
+
+h1 {
+  color: navy;
+}
+
+div.bookmark {
+  border: 1px solid navy;
+  background-color: white;
+  margin-bottom: 4px;
+  padding: 8px;
+}
+
+p.title {
+  font-size: x-large;
+}
+
+p.comment {
+  margin-left: 8px;
+}
